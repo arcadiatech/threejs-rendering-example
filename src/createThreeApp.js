@@ -1,4 +1,12 @@
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import {
+  createBasicMesh,
+  createCamera,
+  createGround,
+  createRenderer,
+} from "./utils";
+import { animate } from "./animate";
 
 export function createThreeApp(canvas) {
   const renderer = createRenderer(canvas);
@@ -9,21 +17,17 @@ export function createThreeApp(canvas) {
     new THREE.Vector3(0, 0, 0)
   );
 
-  renderer.render(scene, camera);
-}
+  const ambientLight = new THREE.AmbientLight("#556", 2.4);
+  scene.add(ambientLight);
 
-function createRenderer(canvas) {
-  const canvasSize = new THREE.Vector2(600, 600);
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(...canvasSize);
-  return renderer;
-}
+  const mesh = createBasicMesh();
+  scene.add(mesh);
 
-function createCamera(canvas, position, targetPosition) {
-  const cameraAspect = canvas.width / canvas.height;
-  const camera = new THREE.PerspectiveCamera(65, cameraAspect, 0.1, 1000);
-  camera.position.set(...position);
-  camera.lookAt(targetPosition);
-  return camera;
+  const ground = createGround();
+  scene.add(ground);
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+
+  animate(renderer, scene, camera, controls);
 }
