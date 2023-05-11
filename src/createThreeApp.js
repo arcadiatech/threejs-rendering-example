@@ -3,6 +3,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import {
   createCabin,
   createCamera,
+  createCircularForest,
   createDirectionalLight,
   createGround,
   createRenderer,
@@ -11,6 +12,9 @@ import {
 import { animate } from "./animate";
 
 const enableShadows = true;
+const drawBackgroundTrees = true;
+const backgroundTreesNumber = 1024;
+const enableBackgroundTreeShadow = enableShadows && true;
 
 export function createThreeApp(canvas) {
   const renderer = createRenderer(canvas, { enableShadows });
@@ -36,6 +40,16 @@ export function createThreeApp(canvas) {
   trees[1].position.set(-12, 0, 5);
   trees[2].position.set(1, 0, -6);
   scene.add(...trees);
+
+  if (drawBackgroundTrees) {
+    const backgroundTrees = createCircularForest(
+      25,
+      250,
+      backgroundTreesNumber,
+      enableBackgroundTreeShadow
+    );
+    scene.add(...backgroundTrees);
+  }
 
   const cabin = createCabin({ enableShadows });
   cabin.position.set(-2, 0, 0);

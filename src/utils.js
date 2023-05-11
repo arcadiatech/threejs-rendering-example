@@ -33,7 +33,7 @@ export function createBasicMesh() {
 
 export function createGround({ enableShadows }) {
   const ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(512, 512),
+    new THREE.CircleGeometry(256),
     new THREE.MeshLambertMaterial({
       color: "#0f0",
       side: THREE.DoubleSide,
@@ -83,6 +83,31 @@ export function createTree({ enableShadows }) {
   }
 
   return tree;
+}
+
+export function createCircularForest(
+  minDistance,
+  maxDistance,
+  numberOfTrees,
+  enableShadows = false
+) {
+  const trees = Array.from(Array(numberOfTrees), () => {
+    const tree = createTree({
+      enableShadows,
+    });
+
+    const angle = Math.random() * 2 * Math.PI;
+    const distance = minDistance + Math.random() * (maxDistance - minDistance);
+    tree.position.set(
+      Math.cos(angle) * distance,
+      0,
+      Math.sin(angle) * distance
+    );
+
+    return tree;
+  });
+
+  return trees;
 }
 
 export function createCabin({ enableShadows }) {
