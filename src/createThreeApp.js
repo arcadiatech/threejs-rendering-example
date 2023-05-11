@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import {
-  //createBasicMesh,
   createCabin,
   createCamera,
   createDirectionalLight,
@@ -28,9 +27,6 @@ export function createThreeApp(canvas) {
   const mainLight = createDirectionalLight({ enableShadows });
   mainLight.position.set(...new THREE.Vector3(1, 1, -1));
   scene.add(mainLight);
-
-  //const mesh = createBasicMesh();
-  //scene.add(mesh);
 
   const ground = createGround({ enableShadows });
   scene.add(ground);
