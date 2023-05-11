@@ -1,10 +1,16 @@
 import * as THREE from "three";
 
-export function createRenderer(canvas) {
+export function createRenderer(canvas, { enableShadows }) {
   const canvasSize = new THREE.Vector2(600, 600);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(...canvasSize);
+
+  if (enableShadows) {
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.enabled = true;
+  }
+
   return renderer;
 }
 
@@ -25,7 +31,7 @@ export function createBasicMesh() {
   return mesh;
 }
 
-export function createGround() {
+export function createGround({ enableShadows }) {
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(512, 512),
     new THREE.MeshLambertMaterial({
@@ -34,10 +40,15 @@ export function createGround() {
     })
   );
   ground.rotateX(-Math.PI / 2);
+
+  if (enableShadows) {
+    ground.receiveShadow = true;
+  }
+
   return ground;
 }
 
-export function createTree() {
+export function createTree({ enableShadows }) {
   const greenMaterial = new THREE.MeshLambertMaterial({
     color: "#285430",
   });
@@ -66,10 +77,15 @@ export function createTree() {
   const tree = new THREE.Group();
   tree.add(trunk, base, top);
   tree.scale.multiplyScalar(Math.random() / 2 + 0.75);
+
+  if (enableShadows) {
+    tree.children.forEach((child) => (child.castShadow = true));
+  }
+
   return tree;
 }
 
-export function createCabin() {
+export function createCabin({ enableShadows }) {
   const cabin = new THREE.Group();
 
   const wallMaterial = new THREE.MeshLambertMaterial({
@@ -98,5 +114,34 @@ export function createCabin() {
   roof.position.set(0, 2 + roofRadius / 2, 0); // this is generally not a correct formula for cylinders, unless it's a 3 sided cylinder
 
   cabin.add(box, roof, chimney);
+
+  if (enableShadows) {
+    cabin.children.forEach((child) => {
+      child.castShadow = true;
+      child.receiveShadow = true;
+    });
+  }
+
   return cabin;
+}
+
+export function createDirectionalLight({ enableShadows }) {
+  const light = new THREE.DirectionalLight("#ff0", 0.5);
+
+  if (enableShadows) {
+    light.castShadow = true;
+
+    light.shadow.mapSize.width = 1024 * 6;
+    light.shadow.mapSize.height = 1024 * 6;
+
+    const lightDistance = 200;
+    light.shadow.camera.near = -1 * lightDistance;
+    light.shadow.camera.far = 1.5 * lightDistance;
+    light.shadow.camera.top = lightDistance;
+    light.shadow.camera.bottom = -lightDistance;
+    light.shadow.camera.left = -2 * lightDistance;
+    light.shadow.camera.right = 2 * lightDistance;
+  }
+
+  return light;
 }
