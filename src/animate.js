@@ -1,5 +1,6 @@
-export function animate(renderer, scene, camera, controls) {
-  requestAnimationFrame(() => animate(renderer, scene, camera, controls));
+export function animate(options) {
+  const { renderer, scene, camera, controls } = options;
+  requestAnimationFrame(() => animate(options));
   controls.update();
   renderer.render(scene, camera);
 }

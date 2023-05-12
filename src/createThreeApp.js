@@ -11,15 +11,17 @@ import {
   importGroundTexture,
   importTruckModel,
 } from "./utils";
-import { animate } from "./animate";
 
-const enableShadows = true;
-const drawBackgroundTrees = true;
-const backgroundTreesNumber = 1024;
-const enableBackgroundTreeShadow = enableShadows && true;
-const useGroundTexture = true;
-
-export function createThreeApp(canvas) {
+export function createThreeApp(
+  canvas,
+  {
+    enableShadows,
+    drawBackgroundTrees,
+    backgroundTreesNumber,
+    enableBackgroundTreeShadow,
+    useGroundTexture,
+  }
+) {
   const renderer = createRenderer(canvas, { enableShadows });
   const scene = new THREE.Scene();
   scene.background = new THREE.Color("#1574bd");
@@ -60,7 +62,7 @@ export function createThreeApp(canvas) {
       25,
       250,
       backgroundTreesNumber,
-      enableBackgroundTreeShadow
+      enableShadows && enableBackgroundTreeShadow
     );
     scene.add(...backgroundTrees);
   }
@@ -82,5 +84,5 @@ export function createThreeApp(canvas) {
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
 
-  animate(renderer, scene, camera, controls);
+  return { renderer, scene, camera, controls };
 }
