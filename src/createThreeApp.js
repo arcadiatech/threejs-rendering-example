@@ -8,6 +8,7 @@ import {
   createGround,
   createRenderer,
   createTree,
+  importTruckModel,
 } from "./utils";
 import { animate } from "./animate";
 
@@ -19,6 +20,7 @@ const enableBackgroundTreeShadow = enableShadows && true;
 export function createThreeApp(canvas) {
   const renderer = createRenderer(canvas, { enableShadows });
   const scene = new THREE.Scene();
+  scene.background = new THREE.Color("#1574bd");
   const camera = createCamera(
     canvas,
     new THREE.Vector3(30, 15, 0),
@@ -53,9 +55,17 @@ export function createThreeApp(canvas) {
 
   const cabin = createCabin({ enableShadows });
   cabin.position.set(-2, 0, 0);
-  cabin.scale.multiplyScalar(0.8);
   cabin.rotateY(Math.PI / 8);
   scene.add(cabin);
+
+  importTruckModel({
+    enableShadows,
+    onModelLoaded: (truckModel) => {
+      truckModel.position.set(3, -0.1, 7);
+      truckModel.scale.multiplyScalar(1.8);
+      scene.add(truckModel);
+    },
+  });
 
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;

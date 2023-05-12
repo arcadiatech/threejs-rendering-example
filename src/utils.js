@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 export function createRenderer(canvas, { enableShadows }) {
   const canvasSize = new THREE.Vector2(600, 600);
@@ -35,7 +36,7 @@ export function createGround({ enableShadows }) {
   const ground = new THREE.Mesh(
     new THREE.CircleGeometry(256),
     new THREE.MeshLambertMaterial({
-      color: "#0f0",
+      color: "#7AA874",
       side: THREE.DoubleSide,
     })
   );
@@ -66,7 +67,7 @@ export function createTree({ enableShadows }) {
   const trunk = new THREE.Mesh(
     new THREE.CylinderGeometry(1, 1, 2),
     new THREE.MeshLambertMaterial({
-      color: "#371B58",
+      color: "#4F200D",
     })
   );
 
@@ -151,7 +152,7 @@ export function createCabin({ enableShadows }) {
 }
 
 export function createDirectionalLight({ enableShadows }) {
-  const light = new THREE.DirectionalLight("#ff0", 0.5);
+  const light = new THREE.DirectionalLight("#fff", 0.5);
 
   if (enableShadows) {
     light.castShadow = true;
@@ -169,4 +170,31 @@ export function createDirectionalLight({ enableShadows }) {
   }
 
   return light;
+}
+
+export function loadGLTFModel(path, callback) {
+  const modelLoader = new GLTFLoader();
+
+  modelLoader.load(
+    path,
+    (gltf) => {
+      const model = gltf.scene;
+      callback(model);
+    },
+    undefined,
+    (error) => {
+      console.error(error);
+    }
+  );
+}
+
+export function importTruckModel({ onModelLoaded = () => {}, enableShadows }) {
+  loadGLTFModel("resources/models/suvLuxury.glb", (model) => {
+    if (enableShadows) {
+      model.traverse((child) => {
+        if (child.isMesh) child.castShadow = true;
+      });
+    }
+    onModelLoaded(model);
+  });
 }
