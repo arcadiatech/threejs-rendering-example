@@ -32,11 +32,14 @@ export function createBasicMesh() {
   return mesh;
 }
 
-export function createGround({ enableShadows }) {
+export function createGround({
+  enableShadows,
+  materialProperties = { color: "#7AA874" },
+}) {
   const ground = new THREE.Mesh(
     new THREE.CircleGeometry(256),
     new THREE.MeshLambertMaterial({
-      color: "#7AA874",
+      ...materialProperties,
       side: THREE.DoubleSide,
     })
   );
@@ -170,6 +173,31 @@ export function createDirectionalLight({ enableShadows }) {
   }
 
   return light;
+}
+
+export function loadTexture(path, callback) {
+  const loader = new THREE.TextureLoader();
+  loader.load(path, callback, undefined, (error) => {
+    console.error(error);
+  });
+}
+
+export function importGroundTexture(onTextureLoaded = () => {}) {
+  loadTexture("resources/textures/grass_02.png", (texture) => {
+    const textureSize = 512;
+    const groundSize = 512;
+    const repeatFactor = 32;
+
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+
+    texture.repeat.set(
+      (groundSize / textureSize) * repeatFactor,
+      (groundSize / textureSize) * repeatFactor
+    );
+
+    onTextureLoaded(texture);
+  });
 }
 
 export function loadGLTFModel(path, callback) {

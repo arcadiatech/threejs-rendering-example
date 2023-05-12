@@ -8,6 +8,7 @@ import {
   createGround,
   createRenderer,
   createTree,
+  importGroundTexture,
   importTruckModel,
 } from "./utils";
 import { animate } from "./animate";
@@ -16,6 +17,7 @@ const enableShadows = true;
 const drawBackgroundTrees = true;
 const backgroundTreesNumber = 1024;
 const enableBackgroundTreeShadow = enableShadows && true;
+const useGroundTexture = true;
 
 export function createThreeApp(canvas) {
   const renderer = createRenderer(canvas, { enableShadows });
@@ -27,15 +29,25 @@ export function createThreeApp(canvas) {
     new THREE.Vector3(0, 0, 0)
   );
 
-  const ambientLight = new THREE.AmbientLight("#556", 0.5);
+  const ambientLight = new THREE.AmbientLight("#448", 0.25);
   scene.add(ambientLight);
 
   const mainLight = createDirectionalLight({ enableShadows });
   mainLight.position.set(...new THREE.Vector3(1, 1, -1));
   scene.add(mainLight);
 
-  const ground = createGround({ enableShadows });
-  scene.add(ground);
+  if (useGroundTexture) {
+    importGroundTexture((texture) => {
+      const ground = createGround({
+        enableShadows,
+        materialProperties: { map: texture },
+      });
+      scene.add(ground);
+    });
+  } else {
+    const ground = createGround({ enableShadows });
+    scene.add(ground);
+  }
 
   const trees = Array.from(Array(3), () => createTree({ enableShadows }));
   trees[0].position.set(-3, 0, 6);
