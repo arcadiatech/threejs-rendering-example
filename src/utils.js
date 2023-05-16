@@ -154,8 +154,8 @@ export function createCabin({ enableShadows }) {
   return cabin;
 }
 
-export function createDirectionalLight({ enableShadows }) {
-  const light = new THREE.DirectionalLight("#fff", 0.5);
+export function createDirectionalLight({ color, intensity, enableShadows }) {
+  const light = new THREE.DirectionalLight(color, intensity);
 
   if (enableShadows) {
     light.castShadow = true;
@@ -196,6 +196,8 @@ export function importGroundTexture(onTextureLoaded = () => {}) {
       (groundSize / textureSize) * repeatFactor
     );
 
+    texture.colorSpace = THREE.SRGBColorSpace;
+
     onTextureLoaded(texture);
   });
 }
@@ -217,7 +219,7 @@ export function loadGLTFModel(path, callback) {
 }
 
 export function importTruckModel({ onModelLoaded = () => {}, enableShadows }) {
-  loadGLTFModel("resources/models/suvLuxury.glb", (model) => {
+  loadGLTFModel("resources/models/truck.glb", (model) => {
     if (enableShadows) {
       model.traverse((child) => {
         if (child.isMesh) child.castShadow = true;

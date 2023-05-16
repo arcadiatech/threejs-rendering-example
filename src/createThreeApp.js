@@ -29,12 +29,23 @@ export function createThreeApp(canvas) {
     new THREE.Vector3(0, 0, 0)
   );
 
-  const ambientLight = new THREE.AmbientLight("#448", 0.25);
+  const ambientLight = new THREE.AmbientLight("#a9a", 0.2);
   scene.add(ambientLight);
 
-  const mainLight = createDirectionalLight({ enableShadows });
+  const mainLight = createDirectionalLight({
+    color: "#cc9",
+    intensity: 1.4,
+    enableShadows,
+  });
   mainLight.position.set(...new THREE.Vector3(1, 1, -1));
   scene.add(mainLight);
+
+  const secondaryLight = createDirectionalLight({
+    color: "#a9a",
+    intensity: 0.2,
+  });
+  secondaryLight.position.set(...new THREE.Vector3(-1, 1, 1));
+  scene.add(secondaryLight);
 
   if (useGroundTexture) {
     importGroundTexture((texture) => {
